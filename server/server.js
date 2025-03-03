@@ -18,11 +18,12 @@ const userSchema = new mongoose.Schema({
 });
 const User = mongoose.model('User', userSchema);
 
-app.get('/get_names', async (req, res) => {
+app.get("/get_names", async (req, res) => {
     try {
-        const users = await User.find({});
-        res.json(users);
-    } catch (err) {
+        const data = await Bandimas1.find({}, "name"); // Только имена
+        const names = data.map(item => item.name); 
+        res.json(names);
+    } catch (error) {
         res.status(500).json({ error: "Server error" });
     }
 });

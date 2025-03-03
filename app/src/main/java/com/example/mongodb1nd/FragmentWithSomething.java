@@ -9,7 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.HashMap;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,6 +69,7 @@ public class FragmentWithSomething extends Fragment {
     EditText editText;
     Button deleteButton;
     Button updateButton;
+    String itemId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,9 +81,55 @@ public class FragmentWithSomething extends Fragment {
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            String something = bundle.getString("something", "No data");
-            editText.setText(something);
+            itemId = bundle.getString("id");  // Переданный _id
+            editText.setText(bundle.getString("something", "No data"));
         }
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://mongodb1nd.onrender.com")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        ApiService apiService = retrofit.create(ApiService.class);
+
+        deleteButton.setOnClickListener(v -> {
+            apiService.deleteItem(itemId).enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(getActivity(), "Deleted successfully!", Toast.LENGTH_SHORT).show();
+                        getActivity().getSupportFragmentManager().popBackStack(); // Закрываем фрагмент
+                    } else {
+                        Toast.makeText(getActivity(), "Delete failed!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    Toast.makeText(getActivity(), "Server error!", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+
+        updateButton.setOnClickListener(v -> {
+            HashMap<String, String> body = new HashMap<>();
+            body.put("something", editText.getText().toString());
+
+            apiService.updateItem(itemId, body).enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(getActivity(), "Updated successfully!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getActivity(), "Update failed!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    Toast.makeText(getActivity(), "Server error!", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
 
         return view;
     }

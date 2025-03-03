@@ -28,5 +28,44 @@ app.get("/get_items", async (req, res) => {
     }
 });
 
+app.delete("/delete_item/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await Bandimas1.findByIdAndDelete(id);
+        
+        if (!result) {
+            return res.status(404).json({ error: "Item not found" });
+        }
+
+        res.json({ message: "Item deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting item:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+app.put("/update_item/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { something } = req.body;
+
+        const updatedItem = await Bandimas1.findByIdAndUpdate(
+            id,
+            { something: something },
+            { new: true }
+        );
+
+        if (!updatedItem) {
+            return res.status(404).json({ error: "Item not found" });
+        }
+
+        res.json({ message: "Item updated successfully", updatedItem });
+    } catch (error) {
+        console.error("Error updating item:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port: ${PORT}`));

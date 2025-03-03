@@ -71,9 +71,11 @@ public class FragmentWithSomething extends Fragment {
         updateButton = view.findViewById(R.id.update_doc_something);
 
         Bundle bundle = getArguments();
-        String string = bundle.getString("key");
+        if (bundle != null) {
+            String something = bundle.getString("something", "No data");
+            editText.setText(something);
+        }
 
-        editText.setText(string);
         return view;
     }
 }

@@ -13,17 +13,15 @@ mongoose.connect(process.env.MONGO_URI, {
 }).then(() => console.log("Connected to MongoDB"))
   .catch(err => console.log("Connection error:", err));
 
-// Создаем модель для коллекции Bandimas1
 const bandimasSchema = new mongoose.Schema({
     name: String
 });
 const Bandimas1 = mongoose.model('Bandimas1', bandimasSchema);
 
-app.get("/get_names", async (req, res) => {
+app.get("/get_items", async (req, res) => {
     try {
-        const data = await Bandimas1.find({}, "name"); // Используем коллекцию Bandimas1
-        const names = data.map(item => item.name); 
-        res.json(names);
+        const data = await Bandimas1.find({}, "_id name something"); 
+        res.json(data); 
     } catch (error) {
         console.error("Error fetching data:", error);
         res.status(500).json({ error: "Server error" });

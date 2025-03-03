@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">MongoDB1ND</string>
+
+    <string-array name="sarasas">
+        <item> Elementas 1 </item>
+        <item> Aljashksadakdjhcd efefre frgtrg </item>
+        <item> Delfi lankomiausias saitas </item>
+        <item> ElEment without /-\\ </item>
+    </string-array>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

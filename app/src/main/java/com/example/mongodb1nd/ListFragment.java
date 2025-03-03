@@ -9,8 +9,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ListFragment extends Fragment {
 
@@ -43,30 +53,39 @@ public class ListFragment extends Fragment {
         }
     }
 
-    String [] saras;
-    String pasirinktasElementas;
     ListView listView;
-    Button addButton;
+    ArrayAdapter<String> adapter;
+    List<String> namesList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         listView = view.findViewById(R.id.listView);
-        addButton = view.findViewById(R.id.add_doc);
 
-        saras = getResources().getStringArray(R.array.sarasas);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        // Подключаем Retrofit
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://myapp.onrender.com/") // Укажите ваш URL
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ApiService apiService = retrofit.create(ApiService.class);
+
+        apiService.getNames().enqueue(new Callback<List<String>>() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("dz", "Elementas " + position + " pasirinktas");
-                pasirinktasElementas = saras[position];
-                Log.d("dz", "pasirinktasElementas: " + pasirinktasElementas);
+            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    namesList = response.body();
+                    adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, namesList);
+                    listView.setAdapter(adapter);
+                }
+            }
 
-                MainActivity.showFragmentWithSomething(pasirinktasElementas);
+            @Override
+            public void onFailure(Call<List<String>> call, Throwable t) {
+                Toast.makeText(getActivity(), "Data loading error!", Toast.LENGTH_SHORT).show();
             }
         });
-
 
         return view;
     }

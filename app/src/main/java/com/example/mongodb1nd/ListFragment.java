@@ -65,7 +65,7 @@ public class ListFragment extends Fragment {
 
         // Подключаем Retrofit
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://myapp.onrender.com/") // Укажите ваш URL
+                .baseUrl("https://mongodb1nd.onrender.com") // Укажите ваш URL
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

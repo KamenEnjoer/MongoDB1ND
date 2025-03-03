@@ -81,8 +81,9 @@ public class FragmentWithSomething extends Fragment {
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            itemId = bundle.getString("id");  // Переданный _id
-            editText.setText(bundle.getString("something", "No data"));
+            itemId = bundle.getString("_id", "");
+            String somethingText = bundle.getString("something", "No data");
+            editText.setText(somethingText);
         }
 
         Retrofit retrofit = new Retrofit.Builder()

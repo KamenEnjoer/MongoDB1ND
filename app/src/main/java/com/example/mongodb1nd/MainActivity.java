@@ -26,14 +26,15 @@ public class MainActivity extends AppCompatActivity {
         fm = getSupportFragmentManager();
     }
 
-    public static void showFragmentWithSomething(String string){
+    public static void showFragmentWithSomething(SomeItem someItem) {
         FragmentTransaction ft = fm.beginTransaction();
-        FragmentWithSomething textStatisticsFragment = new FragmentWithSomething();
-        Bundle bundle = new Bundle();
-        String rez = string;
-        bundle.putString("key", rez);
-        textStatisticsFragment.setArguments(bundle);
-        ft.replace(R.id.frameLayout, textStatisticsFragment, null);
+        FragmentWithSomething fragmentWithSomething = new FragmentWithSomething();
+        Bundle args = new Bundle();
+        args.putString("name", someItem.getName());
+        args.putString("something", someItem.getSomething());
+        fragmentWithSomething.setArguments(args);
+
+        ft.replace(R.id.frameLayout, fragmentWithSomething, null);
         ft.commit();
     }
 }

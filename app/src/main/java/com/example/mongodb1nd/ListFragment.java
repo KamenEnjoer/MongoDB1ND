@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -54,8 +55,9 @@ public class ListFragment extends Fragment {
     }
 
     ListView listView;
+    Button addButton;
+    List<SomeItem> itemList;
     ArrayAdapter<String> adapter;
-    List<String> namesList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,27 +65,45 @@ public class ListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         listView = view.findViewById(R.id.listView);
 
-        // Подключаем Retrofit
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://mongodb1nd.onrender.com") // Укажите ваш URL
+                .baseUrl("https://mongodb1nd.onrender.com")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         ApiService apiService = retrofit.create(ApiService.class);
 
-        apiService.getNames().enqueue(new Callback<List<String>>() {
+        apiService.getItems().enqueue(new Callback<List<SomeItem>>() {
             @Override
-            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+            public void onResponse(Call<List<SomeItem>> call, Response<List<SomeItem>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    namesList = response.body();
-                    adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, namesList);
+                    itemList = response.body();
+
+                    // Создаём список только с именами для отображения в ListView
+                    List<String> names = new ArrayList<>();
+                    for (SomeItem item : itemList) {
+                        names.add(item.getName());
+                    }
+
+                    adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, names);
                     listView.setAdapter(adapter);
+                } else {
+                    Log.e("API Response", "Error: " + response.code() + " " + response.message());
+                    Toast.makeText(getActivity(), "Error: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<List<String>> call, Throwable t) {
+            public void onFailure(Call<List<SomeItem>> call, Throwable t) {
+                Log.e("API Failure", "Error: " + t.getMessage());
                 Toast.makeText(getActivity(), "Data loading error!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                SomeItem selectedItem = itemList.get(position);
+                MainActivity.showFragmentWithSomething(selectedItem);
             }
         });
 

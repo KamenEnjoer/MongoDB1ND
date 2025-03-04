@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -64,6 +65,7 @@ public class ListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         listView = view.findViewById(R.id.listView);
+        addButton = view.findViewById(R.id.add_doc);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://mongodb1nd.onrender.com")
@@ -105,6 +107,10 @@ public class ListFragment extends Fragment {
                 SomeItem selectedItem = itemList.get(position);
                 MainActivity.showFragmentWithSomething(selectedItem);
             }
+        });
+
+        addButton.setOnClickListener(v -> {
+            MainActivity.showFragmentNewDocument();
         });
 
         return view;

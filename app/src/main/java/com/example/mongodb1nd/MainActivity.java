@@ -38,4 +38,11 @@ public class MainActivity extends AppCompatActivity {
         ft.replace(R.id.frameLayout, fragmentWithSomething, null);
         ft.commit();
     }
+
+    public static void showFragmentNewDocument() {
+        FragmentTransaction ft = fm.beginTransaction();
+        FragmentNewDocument fragmentNewDocument = new FragmentNewDocument();
+        ft.replace(R.id.frameLayout, fragmentNewDocument);
+        ft.commit();
+    }
 }

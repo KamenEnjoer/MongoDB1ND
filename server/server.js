@@ -46,6 +46,8 @@ app.delete("/delete_item/:id", async (req, res) => {
 
 app.put("/update_item/:id", async (req, res) => {
     try {
+        console.log("Request received:", req.params.id, req.body);
+        
         const { id } = req.params;
         const { something } = req.body;
 

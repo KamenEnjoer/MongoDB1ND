@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction ft = fm.beginTransaction();
         FragmentWithSomething fragmentWithSomething = new FragmentWithSomething();
         Bundle args = new Bundle();
-        args.putString("_id", someItem.getName());
+        args.putString("_id", someItem.getId());
         args.putString("name", someItem.getName());
         args.putString("something", someItem.getSomething());
         fragmentWithSomething.setArguments(args);

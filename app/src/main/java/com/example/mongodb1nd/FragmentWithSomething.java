@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +71,7 @@ public class FragmentWithSomething extends Fragment {
     Button deleteButton;
     Button updateButton;
     String itemId;
+    String somethingText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -82,7 +84,7 @@ public class FragmentWithSomething extends Fragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             itemId = bundle.getString("_id", "");
-            String somethingText = bundle.getString("something", "No data");
+            somethingText = bundle.getString("something", "No data");
             editText.setText(somethingText);
         }
 

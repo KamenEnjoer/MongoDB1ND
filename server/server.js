@@ -16,11 +16,11 @@ mongoose.connect(process.env.MONGO_URI, {
 const bandimasSchema = new mongoose.Schema({
     name: String
 });
-const Bandimas1 = mongoose.model('Bandimas1', bandimasSchema);
+const bandimas1 = mongoose.model('bandimas1', bandimasSchema);
 
 app.get("/get_items", async (req, res) => {
     try {
-        const data = await Bandimas1.find({}, "_id name something"); 
+        const data = await bandimas1.find({}, "_id name something"); 
         res.json(data); 
     } catch (error) {
         console.error("Error fetching data:", error);
@@ -31,7 +31,7 @@ app.get("/get_items", async (req, res) => {
 app.delete("/delete_item/:id", async (req, res) => {
     try {
         const { id } = req.params;
-        const result = await Bandimas1.findByIdAndDelete(id);
+        const result = await bandimas1.findByIdAndDelete(id);
         
         if (!result) {
             return res.status(404).json({ error: "Item not found" });
@@ -51,7 +51,7 @@ app.put("/update_item/:id", async (req, res) => {
         const { id } = req.params;
         const { something } = req.body;
 
-        const updatedItem = await Bandimas1.findByIdAndUpdate(
+        const updatedItem = await bandimas1.findByIdAndUpdate(
             id,
             { something: something },
             { new: true }
